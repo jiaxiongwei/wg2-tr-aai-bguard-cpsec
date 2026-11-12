@@ -350,6 +350,16 @@ latex_elements = {
 # `if 'DRAFT' in release` conditional that was here previously.
 # if 'DRAFT' in release:
 #     latex_elements['preamble'] += '\\SetWatermarkText{}'
+
+# Figure captions: sphinxmanual prints "Fig." and builds the space into
+# \fnum@figure, so set both the name and the separator -- after the class
+# has done so, hence \AtBeginDocument.
+latex_elements['preamble'] += r"""
+\makeatletter
+\AtBeginDocument{\renewcommand{\figurename}{Figure}%
+  \renewcommand{\fnum@figure}{\figurename\nobreakspace\thefigure}}
+\makeatother
+"""
 latex_elements['preamble'] += '\\SetWatermarkText{}'
 
 # Copy images
@@ -375,6 +385,12 @@ def _dedup_caption_labels(app, exception):
         text = tex.read_text(encoding="utf-8")
         new = _re.sub(r"\\sphinxcaption\{Table \d+ " + _sep, r"\\sphinxcaption{", text)
         new = _re.sub(r"\\caption\{Figure \d+ " + _sep, r"\\caption{", new)
+        # uncaptioned list-tables (History, Authors, Abbreviations) still step
+        # LaTeX's table counter, so the first captioned table would print as
+        # Table 2. Captions carry the document's own numbering; reset the
+        # counter where the first captioned table begins.
+        new = _re.sub(r"\\sphinxcaption\{",
+                      r"\\setcounter{table}{0}\\sphinxcaption{", new, count=1)
         if new != text:
             tex.write_text(new, encoding="utf-8")
 
