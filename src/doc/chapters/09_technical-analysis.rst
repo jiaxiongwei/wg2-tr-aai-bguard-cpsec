@@ -82,7 +82,7 @@ Mitigation: Per-request, time-boxed, scope-limited tokens that bind the agent id
 
 The mechanism is privilege expansion across steps. An agent starting with read-only scope requests or obtains a write scope in a later step, or a token issued for one tool is replayed against another. A concrete example is an agent that begins with calendar read access and subsequently invokes a mail-send tool using a token whose audience was not checked.
 
-Mitigation: Token audience binding, scope intersection at each call (connector.allowedTools ∩ agent.allowedTools), and deny-by-default for unlisted scopes.
+Mitigation: Token audience binding, scope intersection at each call (connector.allowedTools :math:`\cap` agent.allowedTools), and deny-by-default for unlisted scopes.
 
 **AS-06: Excessive autonomy in multi-step plans**
 

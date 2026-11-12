@@ -65,7 +65,7 @@ Regulatory and policy
 
 
 [b-CoE AI Convention]
-    Framework Convention on Artificial Intelligence and Human Rights, Democracy and the Rule of Law, Council of Europe (CETS No. 225, 2024). Available: https://www.coe.int/en/web/artificial-intelligence/the-framework-convention-on-artificial-intelligence
+    Framework Convention on Artificial Intelligence and Human Rights, Democracy and the Rule of Law, Council of Europe (CETS No. 225, 2024). Available: https://www.coe.int/en/web/artificial-intelligence/the-framework-convention-on-artificial-intelligence
 
 
 [b-EU AI Act]
