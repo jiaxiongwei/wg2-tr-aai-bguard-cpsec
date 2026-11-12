@@ -1,60 +1,66 @@
 # Changelog
 
-All notable changes to this OSIA specification source are recorded here.
+All notable changes to the TR.aai-bguard-cpsec source are recorded here.
 Format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/).
 Dates are ISO 8601 (YYYY-MM-DD).
 
 ## [Unreleased]
 
+### Added
+
+- Full reStructuredText source for Technical Report TR.aai-bguard-cpsec,
+  converted from the ITU-T-format Word contribution
+  `FGTIDA-TR.aai-bguard-cpsec.docx` (13 clauses, 4 appendices, bibliography,
+  7 tables, 5 figures, no tracked changes or comments).
+
 ### Changed
-- **Copyright** wired up via a new orphan [src/doc/copyright.rst](src/doc/copyright.rst) page containing the ITU statement ("ITU 2024 / All rights reserved..."). Furo's footer template auto-detects `copyright.rst` and turns the word "Copyright" in `Copyright © {copyright}` into a hyperlink to that page, with no template editing required. Sphinx-wide `copyright = 'ITU 2024'` added in [src/doc/conf.py](src/doc/conf.py) so footers, `{{ copyright }}` template variables, and the linked page all resolve to the same year/holder. The original OSIA/SIA license at [src/doc/annexes/license.rst](src/doc/annexes/license.rst) was kept untouched.
 
-- **LaTeX/PDF cover page** redesigned in [src/doc/conf.py](src/doc/conf.py) to match the ITU recommendation style: default white background (consistent with the rest of the document), top-left "ITUPublications / Recommendations" banner with the ITU-blue accent on "ITU", top-right "International Telecommunication Union / Standardization Sector", red horizontal bar with downward triangle, dark title block (Recommendation / ITU-T X.1281 (03/2024) / SERIES X / Cyberspace security…), thin separator, bold subtitle "APIs for interoperability of identity management systems", and ITU logo bottom-right. Implemented with TikZ overlay + new colors `ituRed`, `ituAccent` (the `ituBg` dark-background color is still defined in the preamble but unused on the cover).
-- **Fixed `\osiahidenextchapterhead` macro definition** in [src/doc/conf.py](src/doc/conf.py): the macro body (which references `\@makechapterhead`) was being tokenized at `\newcommand` time with `@` not a letter, leaking literal "akechapterhead" text into the PDF and failing to suppress the chapter heading. Wrapped the `\newcommand` and `\AtBeginDocument` block in a single outer `\makeatletter ... \makeatother` (the `\makeatletter` *inside* `\newcommand{}{...}` doesn't help — by the time it runs, the body has already been parsed). Cover-page-style "Overview" suppression now works correctly.
-- **Fixed empty `<section>`s in HTML for X-Series, Foreword, Note, IPR**: putting an rst section heading inside `.. only:: html` makes docutils close `<section>` right after the heading, leaving body paragraphs as siblings (HTML rendered an empty section, then the content underneath). Restructured [src/doc/00 - overview.rst](src/doc/00 - overview.rst) so the headings sit at the normal document level, and replaced the `\osiacenteredsection/subsection` per-call calls with new "next-call" hijackers `\osiacenternextsection` / `\osiacenternextsubsection` in [src/doc/conf.py](src/doc/conf.py) that intercept the very next `\section`/`\subsection` to render it centered, then restore. HTML now has proper `<h3>Foreword</h3><p>…body…</p>` structure; PDF still renders the four targeted headings centered.
-- **Entire overview chapter (and all its subsections) removed from PDF TOC** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): added `\let\osiaorigaddcontentsline\addcontentsline` + `\renewcommand{\addcontentsline}[3]{}` at the top of the overview raw-LaTeX block, and `\let\addcontentsline\osiaorigaddcontentsline` just before `\sphinxtableofcontents`. That window swallows every TOC entry the overview would emit (Overview chapter, X-Series section, Recommendation section, all H3 subsections, and the explicit Copyright `\addcontentsline` which was removed since it'd be no-op anyway). PDF TOC now starts at Chapter 1 Introduction; body rendering of the overview pages is unchanged.
-- **"Overview" line removed from PDF TOC** in [src/doc/conf.py](src/doc/conf.py) and [src/doc/00 - overview.rst](src/doc/00 - overview.rst): the previous head-only hider `\osiahidenextchapterhead` was replaced (in the overview file) with a broader `\osiaskipnextchapter` macro, which redefines `\chapter` for one call to emit just a `\cleardoublepage` — no TOC `\addcontentsline`, no `\@makechapterhead`, no counter bump. Result in the PDF TOC: no "Overview" chapter row; the two sections "ITU-T X-Series Recommendations" and "Recommendation ITU-T X.1281" (plus their subsections) appear at the top, then Chapter 1 Introduction. Body rendering and page breaks unchanged.
-- **Page break before "Recommendation ITU-T X.1281"** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): added a `.. raw:: latex \newpage` between the X-Series table caption and the "Recommendation ITU-T X.1281" H2, so the X-Series classification page (page i) stands alone and the Recommendation block (APIs subtitle + Summary / History / Keywords) starts on a fresh page (ii).
-- **PDF cover typography enlarged** in [src/doc/conf.py](src/doc/conf.py): "Recommendation" `\Large` → `\huge`, the two ITU subtitles (SERIES X / Cyberspace security) `\large` → `\Large`. The title block and subtitle TikZ nodes also got `text width=16cm` → `18cm` and `\hyphenpenalty=10000\exhyphenpenalty=10000\sloppy` to stop LaTeX hyphenating whole words on the cover (e.g. "systems" was breaking as "sys-tems").
-- **Copyright block in PDF overview**: heading hidden, `©` glyph added, centered. In [src/doc/00 - overview.rst](src/doc/00 - overview.rst) the final raw-LaTeX block uses `\addcontentsline{toc}{subsection}{Copyright}` (keeps TOC entry without rendering a visible subsection title), then `\begin{center}\textcopyright{} ITU 2024\end{center}` for the centered "© ITU 2024" line. The "All rights reserved..." paragraph stays left-aligned.
-- **PDF overview chapter polished** (no HTML impact). New LaTeX helpers added to [src/doc/conf.py](src/doc/conf.py): `\osiahidenextchapterhead` (suppresses the next `\chapter{}` heading while keeping it in the TOC, used to hide the "Overview" title in PDF), `\osiacenteredsection{…}` and `\osiacenteredsubsection{…}` (centered, unnumbered, listed in TOC at the right depth). In [src/doc/00 - overview.rst](src/doc/00 - overview.rst): the X-Series section heading, the "APIs for interoperability…" subtitle, and the Foreword / Note / Intellectual Property Rights subsection headings are wrapped as `.. only:: html` (rst heading for the web build) plus `.. raw:: latex` (centered raw-LaTeX rendering for the PDF). A `\newpage` is also emitted before Foreword so Foreword + Note + IPR + Copyright land on a fresh page.
-- **Overview chapter restructured** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): the file's H1 is now "Overview" (was "Recommendation ITU-T X.1281"). Two H2 sections beneath it — first "ITU-T X-Series Recommendations" (carries the X-series classification table), second "Recommendation ITU-T X.1281" (carries the "APIs for interoperability…" subtitle bolded paragraph plus the previously-H2 children Summary / History / Keywords / Foreword / Note / Intellectual Property Rights / Copyright as H3 subsections). The Copyright raw-LaTeX block uses `\subsection{Copyright}` to nest correctly under the second H2 (was `\section`).
-- **Copyright section appended to the PDF overview** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst), right after Intellectual Property Rights: a `.. raw:: latex` block emits a `\section{Copyright}` with "ITU 2024 / All rights reserved…". HTML is unaffected (it has the orphan [src/doc/copyright.rst](src/doc/copyright.rst) page reached via the footer hyperlink).
-- **DRAFT watermark removed from PDF** in [src/doc/conf.py](src/doc/conf.py): the `if 'DRAFT' in release: \SetWatermarkText{DRAFT}` conditional was replaced with an unconditional `\SetWatermarkText{}`. `release` still contains "DRAFT" (used elsewhere via `|release|` substitution) but the PDF no longer renders the watermark.
-- **Frontmatter pagestyle stuck for real** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): added a `.. raw:: latex` block at the top of the file emitting `\pagestyle{plain}` + `\thispagestyle{plain}`. Reason: Sphinx's LaTeX template emits its own `\pagestyle{normal}` between the TOC slot and the body content (visible in `target/latex/osia.tex` around lines 223-227), which silently overrode the `\pagestyle{plain}` set by `\osiafrontmatter` in `latex_elements['maketitle']`. With this re-assertion, pages i-v (overview + TOC) show only the page number; running header returns from Chapter 1.
-- **Frontmatter page footer simplified to "page number only"** in [src/doc/conf.py](src/doc/conf.py): `\osiafrontmatter` now also calls `\pagestyle{plain}`, and `\osiamainmatter` restores `\pagestyle{normal}`. Result — the cover, overview chapter, and TOC pages show just the page number; from Chapter 1 onward Sphinx's default running header/footer (chapter name etc.) is back.
-- **PDF running header** changed from `"OSIA, Release v7.3-DRAFT"` to `"Rec. ITU-T, Release X.1281"` **without touching `project`/`release`** (HTML and PDF metadata still see OSIA / v7.3-DRAFT). Done by re-issuing `\title{Rec. ITU-T}` and `\release{X.1281}` inside the existing `\AtBeginDocument` block in [src/doc/conf.py](src/doc/conf.py), which runs after Sphinx's auto-emitted `\title{OSIA}` / `\release{v7.3-DRAFT}` near the top of `osia.tex`, overwriting `\@title` and `\version` before the header macros (`\fancyhead[…] {\@title\sphinxheadercomma\py@release}` in `sphinxlatexstylepage.sty`) read them at page-render time.
-- **PDF page-numbering switched to standard ITU/book layout** in [src/doc/conf.py](src/doc/conf.py): `\osiafrontmatter` calls `\pagenumbering{roman}` (cover + overview + TOC become i, ii, iii…), `\osiamainmatter` calls `\pagenumbering{arabic}` (Chapter 1 onward restarts at arabic page 1). Also added an `\AtBeginDocument` override of `\sphinxtableofcontents` to strip its built-in `roman → arabic` swap (`sphinxmanual.cls:89-98`), which previously fought the new macros and produced two "page 1"s.
-- **PDF front-matter / mainmatter split** in [src/doc/conf.py](src/doc/conf.py) and [src/doc/00 - overview.rst](src/doc/00 - overview.rst): new LaTeX macros `\osiafrontmatter` (sets `secnumdepth=-1`) and `\osiamainmatter` (restores `secnumdepth=2` and resets the chapter counter to 0). `\osiafrontmatter` is appended to the cover via `latex_elements['maketitle']`; `\osiamainmatter` is emitted by a `.. raw:: latex` block at the end of the overview file. To physically place the overview chapter **before** the Table of Contents (ITU layout), `latex_elements['tableofcontents']` is set to `''` (suppress at default slot) and `\sphinxtableofcontents` is emitted from the same raw-LaTeX block at the end of the overview, immediately before `\osiamainmatter`. Final PDF order: cover → Recommendation ITU-T X.1281 (unnumbered chapter) → TOC → Chapter 1 Introduction → Chapter 2 Functional View → ...
-- **Master-doc H1 restored for LaTeX** in [src/doc/index.rst](src/doc/index.rst): `|cover-title|` heading moved out of the `.. only:: html` wrapper. Previously, with no H1 visible to the LaTeX builder, Sphinx fell back to absorbing the first child file's H1 (`Recommendation ITU-T X.1281` in `00 - overview.rst`) as the document title and demoted its H2 children to `\chapter` — pushing `Introduction` to Chapter 8 in the PDF. The H1 now lives at the top level so it becomes the (unrendered, since `\maketitle` is overridden) doc title in LaTeX and the cover heading in HTML.
-- **Chapter numbering** in [src/doc/index.rst](src/doc/index.rst): `00 - overview` moved out of the `:numbered:` toctree into its own non-numbered toctree above. Result — `01 - intro` (Introduction) is now Chapter 1 in both HTML and PDF; everything before the Introduction (overview / annexes-as-front-matter section) renders as unnumbered sections.
-- **Cover content scoped to HTML** in [src/doc/index.rst](src/doc/index.rst): the rubric + title + subtitle block is now wrapped in `.. only:: html`, since the LaTeX builder draws its own cover via `\osiamaketitle`. Previously the same strings rendered twice in the PDF — once on the TikZ cover, then again on page 2. The horizontal-rule transitions inside the `only` block were replaced with `.. raw:: html <hr>` (docutils forbids transitions inside container nodes).
-- **Cover metadata centralised** in [src/doc/conf.py](src/doc/conf.py): the four strings (title, series, subject, subtitle) now live as Python constants `cover_title`, `cover_series`, `cover_subject`, `cover_subtitle`. They are injected into `rst_prolog` as `|cover-title|`, `|cover-series|`, `|cover-subject|`, `|cover-subtitle|` substitutions (consumed by [src/doc/index.rst](src/doc/index.rst)) **and** into the LaTeX preamble as `\coverTitle`, `\coverSeries`, `\coverSubject`, `\coverSubtitle` commands (consumed by `\osiamaketitle`). The en-dash in `cover_subject` is auto-converted to LaTeX `--` for the PDF. Single source of truth for both HTML and PDF covers — edit only the four `cover_*` constants.
-- **`setup()` in [src/doc/conf.py](src/doc/conf.py)** now also copies `*.png` images (in addition to `*.pdf`) to the build output directory, so the LaTeX cover can `\includegraphics{logo_itu.png}`.
-
-- **HTML cover typography** in [src/doc/_static/osia-furo.css](src/doc/_static/osia-furo.css):
-  - `.index-subtitle p` font-size bumped `1.2rem` → `1.55rem` (the "SERIES X", "Cyberspace security", "APIs for interoperability" lines render visibly larger and bolder).
-  - `p.rubric` bottom margin pulled negative (`-0.4rem`) and a new `p.rubric + section > h1` rule strips the H1 underline / top-margin — so "Recommendation" (rubric) and "ITU-T X.1281 (03/2024)" (H1) read as one title unit on the index page instead of two stacked elements.
-  - `.index-subtitle ~ hr` styled with a visible 1px brand-border line and 1.6rem vertical spacing — gives a clear separator between the (SERIES X + Cyberspace) block and the (APIs for interoperability) subtitle on the cover.
-- **Rubric styling** in [src/doc/_static/osia-furo.css](src/doc/_static/osia-furo.css): `p.rubric` now renders at `1.9rem` / weight 500 so the "Recommendation" label on the index page sits visibly between body text and the H1. Color forced via `!important` to `var(--osia-text)` so it actually swaps between the light (`#1F2933`) and dark (`#E5E7EB`) theme values instead of being stuck at Furo's default.
-- **Index cover subtitles** in [src/doc/index.rst](src/doc/index.rst) wrapped in a `.. container:: index-subtitle` and styled `1.2rem` bold in [src/doc/_static/osia-furo.css](src/doc/_static/osia-furo.css).
-- **Landing page** [src/doc/index.rst](src/doc/index.rst) restructured to an ITU-style cover: "Recommendation" rubric, H1 "ITU-T X.1281 (03/2024)", SERIES X and Cyberspace-security subtitles, horizontal rule, then H2 "APIs for interoperability of identity management systems". Toctree kept (hidden).
-- **HTML title** in [src/doc/conf.py](src/doc/conf.py) hardcoded to `"X.1281"` (was `f"{project} {release}"` → "OSIA v7.3-DRAFT"). Affects the browser tab and the Furo sidebar header.
-- **Brand palette** swapped from magenta (`#BE4E90` / `#AD5389`) to `#00A0DD`. Affects:
-  - Furo theme variables in [src/doc/_static/osia-furo.css](src/doc/_static/osia-furo.css) (light + dark themes, gradient).
-  - HTML table-header inline CSS in [src/doc/conf.py](src/doc/conf.py).
-  - LaTeX/PDF title page, copyright line and `tableheader` color in [src/doc/conf.py](src/doc/conf.py) (`rgb 0,0.627,0.867`).
-- **PlantUML invocation** in [src/doc/conf.py](src/doc/conf.py) changed from the hardcoded Windows jar path `C:/dev/plantuml/plantuml.jar` to `plantuml` (system binary on PATH).
-- **HTML logo** in [src/doc/conf.py](src/doc/conf.py) switched to `images/logo_itu.svg`.
+- **Structure.** 20 top-level parts in one flat level: clauses 1–14 numbered,
+  Appendix I–IV, Bibliography and Annex A unnumbered.
+- **Conventions inserted as clause 5** (body `None.`) per ITU-T Technical Report
+  house style. Source clauses 5–13 became 6–14, and every in-text reference to a
+  clause at or after the insertion point was shifted by one — including the
+  bare subsection lists written as `Assessment factors: 10.2, 10.5, …`, which
+  now read `11.2, 11.5, …`, and the ranges `10.2 to 10.11` → `11.2 to 11.11`,
+  `12.1 to 12.9` → `13.1 to 13.9`. Table and figure numbers are unaffected:
+  they are sequential across the whole document, not per clause.
+- **Annex A moved.** The A.1 justification form arrives in the Word file's front
+  matter, between "Background and Proposal" and "Summary". It is rendered as an
+  unnumbered annex after the Bibliography, as a `Field | Content` two-column
+  table. The Word form is a 5-column grid whose first row carries four different
+  facts (working group, work item type, meeting venue and date); those are
+  decomposed into separate labelled rows rather than concatenated.
+- **Front matter** moved from the Word cover into `index.rst`: Abstract (from the
+  cover field), Background and proposal, Summary, History, Authors, Keywords,
+  Foreword and Note. `conf.py` carries `project`, `release`, `author`,
+  `copyright` and the four `cover_*` values; the History table is left empty
+  pending approval records.
+- **Numbering.** `numfig = False`; captions keep their document-wide numbers
+  (Table 1–7, Figure 1–5) because the prose cites them by number — for example
+  "Table 7 maps each standardization point of clause 13". Sphinx's `numfig`
+  numbers per section and restarts inside unnumbered appendices, which would
+  break those citations.
+- **Abbreviations** rendered as a two-column table (44 entries, `AgBOM`–`Wasm`).
+- **Definitions** in 3.1 rendered as a definition list, each entry carrying its
+  source citation (5 entries).
+- **Bibliography** rendered as definition lists in three groups (Standards;
+  Regulatory and policy; Industry and civil-society sources), 22 entries.
+- **Template example content removed**: the demonstration chapters and the
+  OpenAPI sample (`src/doc/yaml/example.yaml`) and its `html_extra_path` entry.
+  Archived under `local/archive/`, which is not tracked.
+- **PDF cover** now reads "Technical Report" rather than "Recommendation".
 
 ### Fixed
-- **X-Series table indentation** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): the three CYBERSPACE SECURITY sub-rows (Cybersecurity, Countering spam, Identity management (IdM) and Authentication) now use a `|nbsp|`-based indent instead of literal `\  \  ` so the hierarchy actually renders in HTML (browsers collapse plain whitespace).
-- **X-Series table caption** in [src/doc/00 - overview.rst](src/doc/00 - overview.rst): "Data networks, open system communications and security" promoted from a standalone italic paragraph to the `list-table` directive's title (picks up Sphinx's `numfig` auto-numbering as "Table N:").
-- [src/doc/functional/_3rdparty.rst](src/doc/functional/_3rdparty.rst): title underline of "Authentic Sources Services" lengthened to match the heading (was too short and emitted reST warnings).
-- [src/doc/functional/_3rdparty.rst](src/doc/functional/_3rdparty.rst): added missing blank line between `.. code-block:: json` and its body (was failing with `maximum 1 argument(s) allowed`).
 
-### Added
-- **ITU front-matter page** [src/doc/00 - overview.rst](src/doc/00 - overview.rst): X-Series classification table, title block, Summary (with note pointing at `[b-OSIA]`), History table, Keywords, Foreword, NOTE on "Administration", and Intellectual Property Rights — transcribed from the ITU-T X.1281 (03/2024) cover pages.
-- [src/doc/index.rst](src/doc/index.rst): added a non-numbered toctree for `00 - overview` so the front matter sits outside the chapter numbering.
-- [CLAUDE.md](CLAUDE.md): build instructions, source layout, ITU build flag, common reST gotchas.
-- [CHANGELOG.md](CHANGELOG.md): this file.
+- `exclude_patterns` extended to `**/_*.rst` so fragments in subdirectories are
+  not built as standalone pages.
+- **Word highlight spans in headings.** Seven headings arrived wrapped in
+  `<span class="mark">` (5.2, 5.3, 8.3, 8.4, 10.1, 11.3 and 13); stripped.
+- **Heading level error.** 10.2–10.11 arrive one level deeper than 10.1 and
+  10.12 in the Word file; flattened so the assessment factors number as
+  siblings — `11.2 Prevention factors (AF-01)` … `11.11 Cross-cutting
+  observation factors (AF-10)`, with `11.12 Collection methods`. Without this
+  the factors rendered as `11.1.1`–`11.1.10` and every
+  `Assessment factors: 11.x` reference pointed past its target.
+- A bold span closed mid-word in clause 9 (`safe-state transition**s`), which
+  made docutils emit "Inline strong start-string without end-string".

@@ -6,3 +6,6 @@ target/
 .venv/
 __pycache__/
 plantuml.jar
+contribution/
+tools/
+local/

@@ -1,60 +1,55 @@
-
 .. raw:: latex
 
     \pagestyle{plain}
     \thispagestyle{plain}
-    %% Suppress all TOC entries for the overview chapter (sections, subsections,
-    %% Copyright addcontentsline) — restored just before \sphinxtableofcontents
-    %% so chapters from Introduction onward appear in the TOC normally.
+    %% Suppress all TOC entries for the front matter (sections, subsections and
+    %% any addcontentsline) — restored just before \sphinxtableofcontents so the
+    %% numbered clauses appear in the TOC normally.
     \let\osiaorigaddcontentsline\addcontentsline
     \renewcommand{\addcontentsline}[3]{}
 
-.. _chapter-overview:
+.. _front-matter:
+
+Analysis of behavioural guardrails for agentic AI: safety and security for cyber-physical systems
+=================================================================================================
 
 .. only:: html
 
-    .. admonition:: This is a document template
-        :class: tip
-
-        Replace the ``<placeholders>`` and the *lorem ipsum* text throughout with
-        your own content. This landing page is the document's front matter:
-
-        * **Abstract**, **History**, **Authors**, **Keywords** and **Foreword**
-          are standard front-matter sections — keep them and fill them in.
-        * **Chapters 1–4** demonstrate the authoring system (text, figures,
-          tables, diagrams, and API references). Read them, then replace their
-          content with your specification.
-
-        This notice appears on the web version only; it is excluded from the
-        published PDF. See the project ``CONTRIBUTING`` guide for how to build and publish.
-
-Title of this document
-========================
-
-.. only:: html
-
-    **<subtitle of this document>**
+    **Draft Technical Report TR.aai-bguard-cpsec — Analysis of behavioural guardrails for agentic AI: safety and security for cyber-physical systems**
 
 .. raw:: latex
 
-    \begin{center}\textbf{<subtitle of this document>}\end{center}
+    \begin{center}\textbf{Draft Technical Report TR.aai-bguard-cpsec — Analysis of behavioural guardrails for agentic AI: safety and security for cyber-physical systems}\end{center}
 
 Abstract
 --------
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit. Sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
+This document proposes a new Technical Report on analysis of behavioural guardrails for agentic AI from the system side, with emphasis on safety and security for cyber-physical systems.
 
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-fugiat nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in
-culpa qui officia deserunt mollit anim id est laborum.
+Background and proposal
+-----------------------
+
+Agentic AI is shifting the paradigm from advising to acting. While generative AI produces content for human interpretation, agentic AI plans, invokes tools, and executes actions. When deployed in cyber-physical systems (CPS) like industrial control, robotics, or vehicles, the agent's output is consumed directly by actuators. This transition fundamentally changes the safety and security landscape. Actions produce physical and sometimes irreversible effects. Errors compound across multi-step plans, and a single compromised instruction can move from altering text to moving a physical machine. The object of protection here is the external cyber-physical system, not the AI model itself.
+
+The necessity of this study arises from the limitations of current practices. Traditional model-level alignment and content filtering are probabilistic and cannot guarantee that an action falls within safe bounds. In a CPS, the control loop imposes strict timing constraints; a guardrail that cannot reach a deterministic verdict within the deadline is not available at all. Furthermore, security threats evolve: prompt injection becomes action injection, and a compromised agent can inherit broad delegated authority to harm the physical plant. Existing functional safety regimes (e.g., IEC 61508, ISO 26262) assume deterministic controllers, not autonomous agents. There is a clear gap between high-level regulatory duties and the enforceable technical controls needed to bound agent behaviour in physical environments. Current industry practice is fragmented, with identity and authorization controls relatively mature but behavioural conformance checking remaining immature.
+
+To address these gaps, this Technical Report analyzes the technical mechanisms of system-facing guardrails and the attack surfaces they must address. It categorizes attack surfaces into twelve groups (AS-01 to AS-12), covering injection, tool abuse, memory poisoning, supply chain compromise, and physical consequences. It also defines a system-facing behavioural risk taxonomy (RSK-01 to RSK-16) and establishes ten assessment factor categories (AF-01 to AF-10) along with their collection methods to judge guardrail effectiveness.
+
+The main research direction is to propose a general, vendor-neutral assessment framework. This framework introduces five enforcement layers ordered by proximity to the physical boundary, explains trust boundaries, and emphasizes the "rule of proximity"—the principle that authoritative control must sit closer to the physical boundary as the consequence of failure rises. It addresses integration with the existing functional safety case, ensuring the agentic layer is treated as additional rather than substitutive. Most importantly, it specifies that for actuating agents, enforcement must be deterministic, in-deadline, and fail-closed.
+
+Finally, the Technical Report identifies standardizable elements, including terminology, reference architecture, machine-readable guardrail policies, drift measurement, identity and delegation, testing methodologies, and unified runtime middleware hooks. The core conclusion is that safety is not achieved by making the model more reliable, but by placing external, independent, and mostly deterministic controls at every trust boundary the agent crosses. This Technical Report provides a structured foundation for standards developers, integrators, and regulators to secure agentic AI in cyber-physical systems.
+
+Summary
+-------
+
+Agentic AI is moving from generating content to taking actions in the physical world. When an autonomous agent controls a cyber-physical system—such as a robot, vehicle, or industrial plant—its actions have real-world, often irreversible consequences. This creates two distinct problems. Behavioural safety concerns harm caused by an agent that is not under adversarial control, while behavioural security concerns harm caused when an adversary compromises the agent, its tools, or its supply chain and turns its actions against the physical plant. Traditional content filters, model alignment, and text-based guards cannot constrain physical actions. In a control loop, a guardrail that is probabilistic or too slow to meet the deadline is effectively useless. Existing functional safety frameworks do not account for autonomous, learning-based agents, leaving a critical gap between regulatory duties and implementable technical controls. A technical report is needed to analyze system-facing risks, examine how guardrails work and fail, and propose a vendor-neutral framework for deterministic, in-deadline, and fail-closed enforcement that protects the external cyber-physical system.
+
+The Technical Report characterizes system-facing risks, classifies attack surfaces, analyzes guardrail limits, presents a risk taxonomy and assessment factors, and proposes an assessment framework covering enforcement layers, trust boundaries, and integration with functional safety, along with standardizable elements.
 
 History
 -------
 
 .. list-table::
-    :header-rows: 1
     :widths: 10 26 18 14 32
 
     * - Version
@@ -62,15 +57,10 @@ History
       - Approval
       - Focus Group
       - Working Group
-    * - <version>
-      - <title>
-      - <date>
-      - TIDA
-      - <acronym>
 
 To access this Document as a PDF, open the published documentation site in your web
-browser and click the PDF download link, or navigate directly to
-https://debora-com.github.io/CUTEspecs/specification.pdf.
+browser and click the PDF download link, or navigate directly to the PDF target of
+this repository.
 
 Authors
 -------
@@ -82,17 +72,14 @@ Authors
     * - Name
       - Affiliation
       - Contact
-    * - <Jane Doe>
-      - <Organization / Company>
-      - <jane.doe@example.com>
-    * - <John Smith>
-      - <Organization / Company>
-      - <john.smith@example.com>
+    * - Xiongwei Jia
+      - China Unicom
+      - jiaxw9@chinaunicom.cn
 
 Keywords
 --------
 
-Lorem, ipsum, dolor, consectetur, adipiscing.
+Agentic artificial intelligence (AI), behavioural guardrails, cyber-physical system, safety, security
 
 .. raw:: latex
 
@@ -122,21 +109,10 @@ available in the group's terms of reference.
 For more news and updates about the TIDA Community, including its supporter organizations,
 please refer to the community's published resources.
 
-.. raw:: latex
-
-    \osiacenternextsection
-
 Note
 ----
 
-Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod tempor
-incididunt ut labore et dolore magna aliqua. Ut enim ad minim veniam, quis nostrud
-exercitation ullamco laboris nisi ut aliquip ex ea commodo consequat.
-
-Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu fugiat
-nulla pariatur. Excepteur sint occaecat cupidatat non proident, sunt in culpa qui officia
-deserunt mollit anim id est laborum. Sed ut perspiciatis unde omnis iste natus error sit
-voluptatem accusantium doloremque laudantium.
+*[Editor: add any note on the status of this Technical Report.]*
 
 .. Intellectual Property Rights — section commented out. To restore it, remove the
    leading ".." and the indentation below, and re-add a ".. raw:: latex" block with
@@ -164,7 +140,7 @@ voluptatem accusantium doloremque laudantium.
 
     %% Copyright notice commented out. To restore, uncomment the lines below.
     %% \vspace{4em}
-    %% \begin{center}\textcopyright{} ITU 2024\end{center}
+    %% \begin{center}\textcopyright{} ITU 2026\end{center}
     %%
     %% \medskip
     %% All rights reserved. No part of this publication may be reproduced, by any means whatsoever, without the
@@ -180,10 +156,28 @@ voluptatem accusantium doloremque laudantium.
     :numbered:
     :hidden:
 
-    chapters/01_chapter1
-    chapters/02_chapter2
-    chapters/03_chapter3
-    chapters/04_chapter4/index
-    chapters/05_annex/index
-    chapters/06_appendix/index
-    chapters/07_references
+    chapters/01_scope
+    chapters/02_references
+    chapters/03_definitions
+    chapters/04_abbreviations
+    chapters/05_conventions
+    chapters/06_overview
+    chapters/07_current-state
+    chapters/08_development-trends
+    chapters/09_technical-analysis
+    chapters/10_risk-taxonomy
+    chapters/11_assessment-factors
+    chapters/12_assessment-framework
+    chapters/13_standardization-points
+    chapters/14_conclusion
+
+.. toctree::
+    :maxdepth: 3
+    :hidden:
+
+    chapters/15_appendix-i_key-terms
+    chapters/16_appendix-ii_guardrail-mapping
+    chapters/17_appendix-iii_events
+    chapters/18_appendix-iv_instruments
+    chapters/19_bibliography
+    chapters/20_annex-a_justification
