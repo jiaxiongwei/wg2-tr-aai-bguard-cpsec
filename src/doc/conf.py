@@ -189,7 +189,7 @@ latex_elements = {
     \if@openright\cleardoublepage\else\clearpage\fi
   }%
   \title{Rec. ITU-T}%
-  \release{<acronym>}%
+  \release{'''+cover_title+r'''}%
 }
 
 %% Hide the next \chapter heading. Used to suppress the "Overview" chapter
@@ -354,7 +354,33 @@ latex_elements['preamble'] += '\\SetWatermarkText{}'
 
 # Copy images
 import os,shutil,fnmatch
+import re as _re
+
+
+def _dedup_caption_labels(app, exception):
+    """Captions already carry 'Table N - '; drop LaTeX's duplicate label.
+
+    numfig is off and the prose cites captions by their document-wide
+    number, so the number lives in the caption text. LaTeX's \\caption adds
+    its own label on top and prints 'Table 1: Table 1 - ...'. Rewrite the
+    generated .tex so only the caption's own number survives.
+    """
+    if app.builder.name != "latex" or exception is not None:
+        return
+    import pathlib as _pl
+    # the dash after the number may arrive as \textendash{} (en dash in the
+    # source) or \sphinxhyphen{} (a plain hyphen)
+    _sep = r"\\(?:textendash\{\}|sphinxhyphen\{\}) "
+    for tex in _pl.Path(app.outdir).glob("*.tex"):
+        text = tex.read_text(encoding="utf-8")
+        new = _re.sub(r"\\sphinxcaption\{Table \d+ " + _sep, r"\\sphinxcaption{", text)
+        new = _re.sub(r"\\caption\{Figure \d+ " + _sep, r"\\caption{", new)
+        if new != text:
+            tex.write_text(new, encoding="utf-8")
+
+
 def setup(app):
+    app.connect("build-finished", _dedup_caption_labels)
     try:
         os.makedirs(app.outdir)
     except:
