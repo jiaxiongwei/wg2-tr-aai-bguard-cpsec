@@ -156,6 +156,10 @@ Note
     \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
     \makeatother
     \setcounter{section}{0}
+    %% \osiamainmatter sets secnumdepth 2, which leaves every third-level
+    %% subclause unnumbered even though the text cites them (e.g. "Clauses
+    %% 9.2.1 to 9.2.6"). Number one level deeper; nothing else uses level 4.
+    \setcounter{secnumdepth}{3}
 
 .. toctree::
     :maxdepth: 3
