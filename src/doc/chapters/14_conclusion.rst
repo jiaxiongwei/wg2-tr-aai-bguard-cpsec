@@ -12,3 +12,7 @@ The constructive conclusion of this Technical Report remains that safety is not 
 
 <span class="mark">
 </span>
+
+.. raw:: latex
+
+    \setcounter{secnumdepth}{-1}

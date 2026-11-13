@@ -81,11 +81,6 @@ Keywords
 
 Agentic artificial intelligence (AI), behavioural guardrails, cyber-physical system, safety, security
 
-.. raw:: latex
-
-    \newpage
-    \osiacenternextsection
-
 Foreword
 --------
 
@@ -115,8 +110,10 @@ Note
 *[Editor: add any note on the status of this Technical Report.]*
 
 .. Intellectual Property Rights — section commented out. To restore it, remove the
-   leading ".." and the indentation below, and re-add a ".. raw:: latex" block with
-   "\osiacenternextsection" before the heading (to centre it on the PDF).
+   leading ".." and the indentation below. Do not put a ".. raw:: latex" block with
+   "\osiacenternextsection" before the heading: the front matter ends with chapters,
+   so the patch stays pending and is consumed by the first \section, leaving clause 1
+   centred and unnumbered.
 
    Intellectual Property Rights
    ----------------------------
@@ -150,6 +147,15 @@ Note
     \let\addcontentsline\osiaorigaddcontentsline
     \sphinxtableofcontents
     \osiamainmatter
+    %% Clauses are \section under an unnumbered chapter, so LaTeX would print
+    %% them 0.1, 0.2, ...  Number them from 1, and restart the counter here:
+    %% the unnumbered front-matter subsections step it before this point.
+    \makeatletter
+    \renewcommand{\thesection}{\arabic{section}}
+    \renewcommand{\thesubsection}{\thesection.\arabic{subsection}}
+    \renewcommand{\thesubsubsection}{\thesubsection.\arabic{subsubsection}}
+    \makeatother
+    \setcounter{section}{0}
 
 .. toctree::
     :maxdepth: 3
