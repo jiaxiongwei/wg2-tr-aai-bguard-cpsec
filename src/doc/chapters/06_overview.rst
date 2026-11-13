@@ -46,7 +46,7 @@ Table 1 summarizes the principal dimensions of contrast. The table is informativ
       - Extended task execution over minutes, hours, or longer
 
 
-The transition from generative to agentic systems introduces what some analyses describe as an action boundary: the moment between when an agent decides what to do and when a downstream component executes it. At this boundary, governance decisions can be made deterministically, recorded with integrity, and enforced regardless of which model the agent is running. The action boundary did not ex<span class="mark">ist for most of AI’s history because classifier outputs, translations, and recommendations were themselves the action. Agents break this assumption by producing structured action proposals rather than terminal outputs.</span>
+The transition from generative to agentic systems introduces what some analyses describe as an action boundary: the moment between when an agent decides what to do and when a downstream component executes it. At this boundary, governance decisions can be made deterministically, recorded with integrity, and enforced regardless of which model the agent is running. The action boundary did not exist for most of AI’s history because classifier outputs, translations, and recommendations were themselves the action. Agents break this assumption by producing structured action proposals rather than terminal outputs.
 
 Behavioural safety and behavioural security
 -------------------------------------------
@@ -64,13 +64,13 @@ In this Technical Report, a guardrail means a technical or procedural mechanism 
 
 This report addresses both safety and security, and the two are distinct. Safety concerns harm to persons and physical assets arising from the action of an agent that is not under adversarial control. Security concerns harm arising when the agent, its tools, its supply chain or its communication channel is compromised by an adversary. The guardrail mechanisms overlap - action mediation and the physical safety interlock serve both - but the threat models differ, and a framework that addresses only one of them leaves the external system exposed to the other. The concept of capability versus authority is central. An agent that can delete a database is not the same as an agent that may delete a database. Guardrails enforce this distinction by ensuring that action proposals are checked against authority before they become effects.
 
-In both cases the object of protection <span class="mark">is the external cyber-physical system. An agent that is itself compromised is a cause of risk, not a principal to be protected: the guardrail exists to bound what the agent can do to the plant, the equipment, the network and the people around it. Controls that protect the agent from the outside world (for example, protecting a model from extraction) are therefore outside the scope of this Technical Report except where they are required to bound the risk that the agent poses to the external cyber-physical system.</span>
+In both cases the object of protection is the external cyber-physical system. An agent that is itself compromised is a cause of risk, not a principal to be protected: the guardrail exists to bound what the agent can do to the plant, the equipment, the network and the people around it. Controls that protect the agent from the outside world (for example, protecting a model from extraction) are therefore outside the scope of this Technical Report except where they are required to bound the risk that the agent poses to the external cyber-physical system.
 
 Why agentic behaviour changes the safety and security problem
 -------------------------------------------------------------
 
 
-<span class="mark">The shift from advise to act transforms the safety problem in several int</span>errelated ways.
+The shift from advise to act transforms the safety problem in several interrelated ways.
 
 First, agentic actions have real-world side effects. A generative model that produces incorrect financial advice may mislead a human; an agentic system that executes a trade or transfers funds creates immediate, potentially irreversible consequences. Irreversibility is a defining concern: some actions, such as deleting data, sending communications, or executing financial transactions, cannot be undone. The cost of a safety failure is therefore not a bad output that a human can ignore, but a state change that may require remediation.
 

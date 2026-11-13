@@ -10,8 +10,6 @@ On the standardization side, the open work concerns what remains to be specified
 
 The constructive conclusion of this Technical Report remains that safety is not sought by making the model more reliable, but by placing external, independent, mostly deterministic controls at every trust boundary the agent crosses. The two directions above, technology development and technical standardization, carry that work forward.
 
-<span class="mark">
-</span>
 
 .. raw:: latex
 

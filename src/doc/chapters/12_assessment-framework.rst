@@ -24,7 +24,7 @@ The object of assessment is the guardrail chain and its effect on the external c
 
 An assessment is scoped to a declared deployment. The declaration fixes the system boundary, the authority envelope within which the agent operates, the tool set and delegation chain in use, and the risk set drawn from clause 10 that the deployment is intended to bound. Two deployments that differ in any of these respects are assessed separately, since the same guardrail chain can be effective in one and ineffective in another.
 
-The same declared deployment is assessed at design, at integration, in operation and after an incident, with the factors in clause 11 applied consistently across those occasions. The assessment complements and does not replace the functional-safety case; the agentic layer and its guardrails are additional to the established <span class="mark">safety argument, and evidence gathered under this framework is not a substitute for the evidence that the functional-safety case requires.</span>
+The same declared deployment is assessed at design, at integration, in operation and after an incident, with the factors in clause 11 applied consistently across those occasions. The assessment complements and does not replace the functional-safety case; the agentic layer and its guardrails are additional to the established safety argument, and evidence gathered under this framework is not a substitute for the evidence that the functional-safety case requires.
 
 Enforcement layers and trust boundaries
 ---------------------------------------
