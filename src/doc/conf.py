@@ -368,7 +368,7 @@ import re as _re
 
 
 def _dedup_caption_labels(app, exception):
-    """Captions already carry 'Table N - '; drop LaTeX's duplicate label.
+    r"""Captions already carry 'Table N - '; drop LaTeX's duplicate label.
 
     numfig is off and the prose cites captions by their document-wide
     number, so the number lives in the caption text. LaTeX's \\caption adds
